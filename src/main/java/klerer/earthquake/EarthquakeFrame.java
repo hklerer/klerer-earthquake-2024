@@ -1,6 +1,6 @@
 package klerer.earthquake;
+
 import hu.akarnokd.rxjava3.swing.SwingSchedulers;
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import klerer.earthquake.json.Feature;
@@ -15,11 +15,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.function.Function;
 
 public class EarthquakeFrame extends JFrame {
 
-    private JList<String> jList = new JList<>();
+    private JList<String> jlist = new JList<>();
     private ButtonGroup buttonGroup = new ButtonGroup();
 
     public EarthquakeFrame() {
@@ -44,7 +43,7 @@ public class EarthquakeFrame extends JFrame {
 
         add(panel, BorderLayout.NORTH);
 
-        add(jList, BorderLayout.CENTER);
+        add(jlist, BorderLayout.CENTER);
 
         EarthquakeService service = new EarthquakeServiceFactory().getService();
 
@@ -78,15 +77,16 @@ public class EarthquakeFrame extends JFrame {
             }
         });
 
-        jList.addListSelectionListener(new ListSelectionListener() {
+        jlist.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    int selectedIndex = jList.getSelectedIndex();
+                    int selectedIndex = jlist.getSelectedIndex();
                     if (selectedIndex != -1) {
                         Feature selectedFeature = getFeatureAt(selectedIndex);
                         if (selectedFeature != null) {
-                            openGoogleMaps(selectedFeature.geometry.coordinates[1], selectedFeature.geometry.coordinates[0]);
+                            openGoogleMaps(selectedFeature.geometry.coordinates[1],
+                                    selectedFeature.geometry.coordinates[0]);
                         }
                     }
                 }
@@ -96,8 +96,8 @@ public class EarthquakeFrame extends JFrame {
     }
 
     private Feature getFeatureAt(int index) {
-        if (index >= 0 && index < jList.getModel().getSize()) {
-            String selectedValue = jList.getModel().getElementAt(index);
+        if (index >= 0 && index < jlist.getModel().getSize()) {
+            String selectedValue = jlist.getModel().getElementAt(index);
             String[] parts = selectedValue.split(" ");
             if (parts.length >= 2) {
                 double mag = Double.parseDouble(parts[0]);
@@ -132,7 +132,7 @@ public class EarthquakeFrame extends JFrame {
                 .map(feature -> feature.properties.mag + " " + feature.properties.place)
                 .toList()
                 .toArray(new String[0]);
-        jList.setListData(listData);
+        jlist.setListData(listData);
     }
 
 }
